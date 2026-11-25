@@ -1,5 +1,10 @@
-from ingestion.connectors.base import BaseConnector
+import logging
 import pandas as pd
+import pandas.errors
+
+from ingestion.connectors.base import BaseConnector
+
+logger = logging.getLogger(__name__)
 
 class XLSXConnector(BaseConnector):
 
@@ -7,5 +12,23 @@ class XLSXConnector(BaseConnector):
         self.file_path = file_path
 
     def extract(self) -> pd.DataFrame:
-        df = pd.DataFrame()
-        return df
+        """Extract XLSX data and return as DataFrame"""
+        try:
+            logger.info("Starting XLSX extraction: %s", self.file_path)
+            df = pd.read_excel(self.file_path)
+
+            if len(df) == 0:
+                logger.warning("XLSX returned empty dataset: %s", self.file_path)
+            else:
+                logger.info("XLSX extraction completed: %d records retrieved", len(df))
+
+            return df
+        except FileNotFoundError:
+            logger.exception("XLSX file not found: %s", self.file_path)
+            raise
+        except pandas.errors.ParserError:
+            logger.exception("Failed to parse XLSX file: %s", self.file_path)
+            raise
+        except Exception:
+            logger.exception("Unexpected XLSX extraction error")
+            raise

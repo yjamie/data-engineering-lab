@@ -1,7 +1,8 @@
-from ingestion.connectors.base import BaseConnector
+import logging
 import pandas as pd
 import requests
-import logging
+
+from ingestion.connectors.base import BaseConnector
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class APIConnector(BaseConnector):
     def extract(self) -> pd.DataFrame:
         """Extracts API response data and return as a DataFrame"""
         try:
-            logger.info("Starting API extraction")
+            logger.info("Starting API extraction: %s", self.url)
 
             response = requests.get(
                 url=self.url,
@@ -36,7 +37,7 @@ class APIConnector(BaseConnector):
             return df
 
         except requests.RequestException:
-            logger.exception("API extraction failed")
+            logger.exception("API extraction failed: %s", self.url)
             raise
         except ValueError:
             logger.exception("Failed to parse API response into JSON")

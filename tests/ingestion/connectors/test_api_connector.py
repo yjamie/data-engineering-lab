@@ -37,8 +37,9 @@ def test_successful_extraction(mock_get, mock_response):
     mock_get.assert_called_once()
 
 
+@patch("ingestion.connectors.api_connector.logger.warning")
 @patch("ingestion.connectors.api_connector.requests.get")
-def test_empty_response(mock_get):
+def test_empty_response(mock_get, mock_warning):
     """Tests API returning empty dataset"""
     mock_response = MagicMock()
     mock_response.json.return_value = []
@@ -50,6 +51,11 @@ def test_empty_response(mock_get):
 
     assert isinstance(df, pd.DataFrame)
     assert len(df) == 0
+    mock_warning.assert_called_once_with(
+        "API returned empty dataset: %s",
+        "http://jamieisthebest.com/api"
+    )
+
 
 
 @patch("ingestion.connectors.api_connector.requests.get")
