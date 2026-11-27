@@ -2,11 +2,12 @@ import logging
 import pandas as pd
 import pandas.errors
 
-from ingestion.connectors.base import BaseConnector
+from ingestion.extractors.base_extractor import BaseExtractor
 
 logger = logging.getLogger(__name__)
 
-class CSVConnector(BaseConnector):
+class CSVExtractor(BaseExtractor):
+    """Handles data extraction from CSV source"""
 
     def __init__(self, file_path: str):
         self.file_path = file_path

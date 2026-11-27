@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 
-class BaseConnector(ABC):
-    """Abstract interface for all data source connectors"""
+class BaseExtractor(ABC):
+    """Abstract class for all data source extractors"""
 
     @abstractmethod
-    def extract(self) -> pd.DataFrame:
+    def extract(self, **kwargs) -> pd.DataFrame:
         """Extract source data and return as a DataFrame"""
         pass
